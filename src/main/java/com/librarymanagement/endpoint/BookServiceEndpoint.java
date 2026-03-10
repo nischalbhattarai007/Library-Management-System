@@ -169,17 +169,10 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
 
             BookDto lentBook = bookService.lendBook(bookId, borrower);
 
-            LendResponse response = LendResponse.newBuilder()
-                    .setBookId(lentBook.getBookId())
-                    .setTitle(lentBook.getBookTitle())
-                    .setBorrowerName(lentBook.getLentTo())
-                    .setMessage("Book lend successfully")
-                    .setSuccess(true)
-                    .build();
+            LendResponse response=GrpcMapper.toLendResponse(lentBook);
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
-
         } catch (Exception e) {
             responseObserver.onError(
                     Status.INTERNAL
@@ -201,12 +194,7 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
                 return;
             }
             BookDto returnedBook=bookService.returnBook(bookId);
-            ReturnResponse response=ReturnResponse.newBuilder()
-                    .setBookId(returnedBook.getBookId())
-                    .setTitle(returnedBook.getBookTitle())
-                    .setSuccess(true)
-                    .setMessage("Book returned successfully!")
-                    .build();
+            ReturnResponse response=GrpcMapper.toReturnResponse(returnedBook);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
@@ -239,10 +227,7 @@ public void listAuthors(Empty request,StreamObserver<AuthorResponse> responseObs
                 return;
             }
             for(AuthorDto author:authors){
-                AuthorResponse response=AuthorResponse.newBuilder()
-                        .setName(author.getAuthorName())
-                        .build();
-                responseObserver.onNext(response);
+                responseObserver.onNext(GrpcMapper.toAuthorResponse(author));
             }
             responseObserver.onCompleted();
         }
