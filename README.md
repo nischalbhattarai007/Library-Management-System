@@ -18,7 +18,7 @@ A **Library Management System** using **gRPC** and **Java**, with clean architec
 - Custom exceptions for better error handling
 
 ---
-
+````
 ##  Project Architecture
 library-management
 │
@@ -30,6 +30,6 @@ library-management
 ├── mapper # DTO ↔ gRPC conversion
 ├── exception # Custom exceptions
 └── proto # gRPC Protobuf definitions
-
+````
 
 ---
