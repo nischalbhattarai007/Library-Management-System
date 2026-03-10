@@ -21,10 +21,10 @@ public class BookMapper {
                 entity.getAuthor() !=null ? entity.getAuthor().getAuthorName():null
         );
     }
-       /*
-     Convert BookEntity -> BookDto
-     Used when sending data to client
-    */
+    /*
+   Convert BookDto → BookEntity
+   Used when saving data to database
+  */
     public static BookEntity toEntity(BookDto toDto){
         if(toDto==null){
             return null;
