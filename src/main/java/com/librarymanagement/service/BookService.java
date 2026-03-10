@@ -9,6 +9,7 @@ import com.librarymanagement.entity.BookEntity;
 import com.librarymanagement.exception.BookAlreadyLentException;
 import com.librarymanagement.exception.BookNotFoundException;
 import com.librarymanagement.exception.NameNotFoundException;
+import com.librarymanagement.mapper.AuthorMapper;
 import com.librarymanagement.mapper.BookMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -116,7 +117,7 @@ public class BookService {
     public List<AuthorDto> listAuthors(){
         return authorRepo.findAll()
                 .stream()
-                .map(author->new AuthorDto(author.getAuthorId(),author.getAuthorName()))
+                .map(AuthorMapper::toDto)
                 .toList();
     }
     public void deleteBooks(int bookId){
