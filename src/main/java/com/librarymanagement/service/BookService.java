@@ -6,8 +6,10 @@ import com.librarymanagement.dto.AuthorDto;
 import com.librarymanagement.dto.BookDto;
 import com.librarymanagement.entity.AuthorEntity;
 import com.librarymanagement.entity.BookEntity;
+import com.librarymanagement.exception.BookAlreadyLentException;
 import com.librarymanagement.exception.BookNotFoundException;
 import com.librarymanagement.exception.NameNotFoundException;
+import com.librarymanagement.mapper.BookMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.List;
@@ -24,7 +26,7 @@ public class BookService {
 
     }
     public BookDto addBook(BookDto bookDto){
-
+        //author entity fetched form DB and then inject into entity
         AuthorEntity author = authorRepo
                 .findByAuthorName(bookDto.getAuthorName())
                 .orElseGet(() -> {
@@ -32,23 +34,12 @@ public class BookService {
                     newAuthor.setAuthorName(bookDto.getAuthorName());
                     return authorRepo.save(newAuthor);
                 });
-
-        BookEntity bookEntity = new BookEntity();
-        bookEntity.setBookTitle(bookDto.getBookTitle());
-        bookEntity.setGenre(bookDto.getGenre());
+        BookEntity bookEntity= BookMapper.toEntity(bookDto);
         bookEntity.setLent(false);
         bookEntity.setLentTo(null);
         bookEntity.setAuthor(author);
         bookEntity = bookRepo.save(bookEntity);
-
-        return new BookDto(
-                bookEntity.getBookId(),
-                bookEntity.getBookTitle(),
-                bookEntity.getGenre(),
-                bookEntity.isLent(),
-                bookEntity.getLentTo(),
-                bookEntity.getAuthor().getAuthorName()
-        );
+        return BookMapper.toDto(bookEntity);
     }
     public BookDto getBookById(long bookNumber){
         Optional<BookEntity> entityOpt=bookRepo.findById((int) bookNumber);
@@ -87,7 +78,7 @@ public class BookService {
         }
         //  Check if already lent
         if (book.isLent()) {
-            throw new RuntimeException("Book is already lent to " + book.getLentTo());
+            throw new BookAlreadyLentException("Book is already lent to " + book.getLentTo());
         }
 
         book.setLent(true);
@@ -106,7 +97,7 @@ public class BookService {
     }
     public BookDto returnBook(long bookId){
         BookEntity book=bookRepo.findById((int) bookId)
-                .orElseThrow(()->new RuntimeException("book not found"));
+                .orElseThrow(()->new BookNotFoundException("book not found"));
         if(!book.isLent()){
             throw new RuntimeException(" Book " + book.getBookTitle()  +  " is not currently lend");
         }
@@ -130,7 +121,7 @@ public class BookService {
     }
     public void deleteBooks(int bookId){
        if(!bookRepo.existsById(bookId)){
-           throw new RuntimeException("Book not found with this id : " + bookId);
+           throw new BookNotFoundException("Book not found with this id : " + bookId);
        }
        bookRepo.deleteById(bookId);
     }
