@@ -1,39 +1,102 @@
-## Micronaut 4.10.9 Documentation
+# Library Management gRPC Service
 
-- [User Guide](https://docs.micronaut.io/4.10.9/guide/index.html)
-- [API Reference](https://docs.micronaut.io/4.10.9/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/4.10.9/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
+[![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.oracle.com/java/)  
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)  
+[![Build](https://img.shields.io/badge/Build-Gradle-yellow.svg)](https://gradle.org/)
+
+A **Library Management System** using **gRPC** and **Java**, with clean architecture including endpoints, services, repositories, DTOs, and mappers. Manage books and authors efficiently with lending/return features.
+
 ---
 
-- [Protobuf Gradle Plugin](https://plugins.gradle.org/plugin/com.google.protobuf)
-- [Shadow Gradle Plugin](https://gradleup.com/shadow/)
-- [Micronaut Gradle Plugin documentation](https://micronaut-projects.github.io/micronaut-gradle-plugin/latest/)
-- [GraalVM Gradle Plugin documentation](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
-## Feature lombok documentation
+##  Features
 
-- [Micronaut Project Lombok documentation](https://docs.micronaut.io/latest/guide/index.html#lombok)
+- Add, list, lend, return, and delete books
+- List authors
+- gRPC endpoints with validation
+- DTOs and Mapper classes for clean conversion
+- Logging via SLF4J/Lombok
+- Custom exceptions for better error handling
 
-- [https://projectlombok.org/features/all](https://projectlombok.org/features/all)
+---
 
-
-## Feature serialization-jackson documentation
-
-- [Micronaut Serialization Jackson Core documentation](https://micronaut-projects.github.io/micronaut-serialization/latest/guide/)
-
-
-## Feature discovery-core documentation
-
-- [Micronaut Discovery Core documentation](https://micronaut-projects.github.io/micronaut-discovery-client/latest/guide/)
-
-
-## Feature test-resources documentation
-
-- [Micronaut Test Resources documentation](https://micronaut-projects.github.io/micronaut-test-resources/latest/guide/)
+##  Project Architecture
+library-management
+│
+├── endpoint # gRPC endpoints
+├── service # Business logic
+├── repository # Database access
+├── entity # DB entities
+├── dto # Data Transfer Objects
+├── mapper # DTO ↔ gRPC conversion
+├── exception # Custom exceptions
+└── proto # gRPC Protobuf definitions
 
 
-## Feature jdbc-hikari documentation
+---
 
-- [Micronaut Hikari JDBC Connection Pool documentation](https://micronaut-projects.github.io/micronaut-sql/latest/guide/index.html#jdbc)
+##  Getting Started
 
+### 1. Clone the repo
+```bash
+git clone https://github.com/nischalbhattarai007/Library-Management-System
+cd library-management-system-grpc
+
+./gradlew build
+
+./gradlew run
+
+Server will start on port 50051 by default.
+
+Test the API
+
+Use Evans CLI, BloomRPC, or Postman gRPC:
+
+AddBook(BookRequest)
+
+GetBookById(BookIdRequest)
+
+ListBooks(Empty)
+
+LendBook(LendRequest)
+
+ReturnBook(ReturnRequest)
+
+ListAuthors(Empty)
+
+DeleteBook(DeleteBookRequest)
+Add a book
+{
+  "title": "The Hobbit",
+  "genre": "Fantasy",
+  "authorName": "J.R.R. Tolkien"
+}
+
+Response : 
+{
+  "bookId": 1,
+  "title": "The Hobbit",
+  "genre": "Fantasy",
+  "isLent": false,
+  "lentTo": "",
+  "authorName": "J.R.R. Tolkien"
+}
+
+Technologies Used
+
+Java 17+
+
+gRPC & Protobuf
+
+Jakarta / Micronaut Dependency Injection
+
+SLF4J + Lombok
+
+Gradle
+
+Contact
+
+Author: Nischal Bhattaarai
+GitHub: https://github.com/your-username
+
+Email: your-email@example.com
 
