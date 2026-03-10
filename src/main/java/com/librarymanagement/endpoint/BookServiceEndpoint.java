@@ -280,7 +280,6 @@ public void deleteBooks(DeleteBookRequest request,StreamObserver<DeleteBookRespo
                             .withDescription("Book not found" + e.getMessage())
                             .asRuntimeException()
             );
-            return;
         }
         catch (Exception e){
             responseObserver.onError(
