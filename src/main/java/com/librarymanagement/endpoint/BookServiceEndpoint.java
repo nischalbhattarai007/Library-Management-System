@@ -9,8 +9,7 @@ import io.grpc.stub.StreamObserver;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
+import com.librarymanagement.mapper.GrpcMapper;
 import java.util.List;
 
 @Slf4j
@@ -66,24 +65,9 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
                 return;
             }
 
-            //  Convert gRPC request -> DTO
-            BookDto bookDto = new BookDto();
-            bookDto.setBookTitle(title);
-            bookDto.setGenre(genre);
-            bookDto.setAuthorName(authorName);
-
-            //  Call service to save book
-            BookDto savedBook = bookService.addBook(bookDto);
-
-            // Build gRPC response
-            BookResponse response = BookResponse.newBuilder()
-                    .setBookId(savedBook.getBookId())
-                    .setTitle(savedBook.getBookTitle())
-                    .setGenre(savedBook.getGenre())
-                    .setIsLent(savedBook.isLent())
-                    .setLentTo(savedBook.getLentTo() != null ? savedBook.getLentTo() : "")
-                    .setAuthorName(savedBook.getAuthorName() != null ? savedBook.getAuthorName() : "")
-                    .build();
+           BookDto bookDto=GrpcMapper.toBookDto(bookRequest);
+            BookDto savedBook=bookService.addBook(bookDto);
+            BookResponse response=GrpcMapper.toBookResponse(savedBook);
 
             log.info("New book '{}' added successfully", title);
 
@@ -118,15 +102,7 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
                 return;
             }
 
-            //  Build gRPC response
-            BookResponse response = BookResponse.newBuilder()
-                    .setBookId(bookDto.getBookId())
-                    .setTitle(bookDto.getBookTitle())
-                    .setGenre(bookDto.getGenre())
-                    .setIsLent(bookDto.isLent())
-                    .setLentTo(bookDto.getLentTo() != null ? bookDto.getLentTo() : "")
-                    .setAuthorName(bookDto.getAuthorName())
-                    .build();
+           BookResponse response=GrpcMapper.toBookResponse(bookDto);
 
             log.info("Book '{}' retrieved successfully", bookDto.getBookTitle());
 
@@ -160,17 +136,7 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
             }
 
             for (BookDto bookDto : books) {
-
-                BookResponse response = BookResponse.newBuilder()
-                        .setBookId(bookDto.getBookId())
-                        .setTitle(bookDto.getBookTitle())
-                        .setGenre(bookDto.getGenre())
-                        .setIsLent(bookDto.isLent())
-                        .setLentTo(bookDto.getLentTo() != null ? bookDto.getLentTo() : "")
-                        .setAuthorName(bookDto.getAuthorName())
-                        .build();
-
-                responseObserver.onNext(response);
+                responseObserver.onNext(GrpcMapper.toBookResponse(bookDto));
             }
 
             responseObserver.onCompleted();
