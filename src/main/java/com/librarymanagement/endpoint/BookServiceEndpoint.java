@@ -33,7 +33,7 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
             String authorName = bookRequest.getAuthorName();
             if(authorName.isBlank()){
                 responseObserver.onError(
-                        Status.NOT_FOUND
+                        Status.INVALID_ARGUMENT
                                 .withDescription("Author name should not be empty")
                                 .asRuntimeException()
                 );
@@ -143,6 +143,7 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
             );
         }
     }
+    @Override
     public void listBooks(Empty emp, StreamObserver<BookResponse> responseObserver) {
 
         try {
@@ -221,6 +222,7 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
             );
         }
     }
+    @Override
     public void returnBook(ReturnRequest returnRequest, StreamObserver<ReturnResponse> responseObserver){
         try{
             long bookId=returnRequest.getBookId();
@@ -258,12 +260,13 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
             );
         }
     }
+    @Override
 public void listAuthors(Empty request,StreamObserver<AuthorResponse> responseObserver){
         try{
             List<AuthorDto> authors=bookService.listAuthors();
             if(authors.isEmpty()){
                 responseObserver.onError(
-                        Status.NOT_FOUND
+                        Status.INVALID_ARGUMENT
                                 .withDescription("No author found")
                                 .asRuntimeException()
                 );
@@ -286,6 +289,7 @@ public void listAuthors(Empty request,StreamObserver<AuthorResponse> responseObs
             );
         }
 }
+@Override
 public void deleteBooks(DeleteBookRequest request,StreamObserver<DeleteBookResponse> responseObserver){
         try{
             long bookId=request.getBookId();
