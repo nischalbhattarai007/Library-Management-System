@@ -16,6 +16,7 @@ service LibraryService {
     rpc AddAuthor(AuthorRequest) returns (AuthorResponse);
     rpc ListAuthors(Empty) returns (stream AuthorResponse);
     rpc DeleteBooks(DeleteBookRequest) returns (DeleteBookResponse);
+
 }
 message BookRequest{
     string title = 1;
