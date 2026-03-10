@@ -8,8 +8,6 @@ import com.librarymanagement.entity.AuthorEntity;
 import com.librarymanagement.entity.BookEntity;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -137,4 +135,5 @@ public class BookService {
        }
        bookRepo.deleteById(bookId);
     }
+
 }
