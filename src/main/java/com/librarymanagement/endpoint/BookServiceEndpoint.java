@@ -123,7 +123,6 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
     public void listBooks(Empty emp, StreamObserver<BookResponse> responseObserver) {
 
         try {
-
             List<BookDto> books = bookService.listBooks();
 
             if (books.isEmpty()) {
