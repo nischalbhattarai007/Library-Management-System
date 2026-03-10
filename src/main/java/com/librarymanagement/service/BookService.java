@@ -126,5 +126,18 @@ public class BookService {
        }
        bookRepo.deleteById(bookId);
     }
+    public List<BookDto> searchBooks(String query){
+        List<BookEntity> books=bookRepo.findByBookTitleContainingIgnoreCaseOrAuthor_AuthorNameContainingIgnoreCase(query,query);
+        return books.stream()
+                .map(bookEntity -> new BookDto(
+                        bookEntity.getBookId(),
+                        bookEntity.getBookTitle(),
+                        bookEntity.getGenre(),
+                        bookEntity.isLent(),
+                        bookEntity.getLentTo(),
+                        bookEntity.getAuthor().getAuthorName()
+                ))
+                .toList();
+    }
 
 }

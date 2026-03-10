@@ -137,7 +137,9 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
 
             for (BookDto bookDto : books) {
                 responseObserver.onNext(GrpcMapper.toBookResponse(bookDto));
+                log.info("Retrieved books successfully {} " , bookDto);
             }
+
 
             responseObserver.onCompleted();
 
@@ -170,7 +172,7 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
             BookDto lentBook = bookService.lendBook(bookId, borrower);
 
             LendResponse response=GrpcMapper.toLendResponse(lentBook);
-
+            log.info("Book lent successfully to {}" , borrower);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
@@ -195,6 +197,7 @@ public class BookServiceEndpoint extends LibraryServiceGrpc.LibraryServiceImplBa
             }
             BookDto returnedBook=bookService.returnBook(bookId);
             ReturnResponse response=GrpcMapper.toReturnResponse(returnedBook);
+            log.info("Books returned Successfully ");
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
@@ -228,6 +231,7 @@ public void listAuthors(Empty request,StreamObserver<AuthorResponse> responseObs
             }
             for(AuthorDto author:authors){
                 responseObserver.onNext(GrpcMapper.toAuthorResponse(author));
+                log.info("List of authors retrieved successfully : {}",author);
             }
             responseObserver.onCompleted();
         }
@@ -274,6 +278,38 @@ public void deleteBooks(DeleteBookRequest request,StreamObserver<DeleteBookRespo
             );
         }
 }
-
-
+public void searchBook(SearchRequest request,StreamObserver<BookResponse> responseObserver){
+        try{
+            String query=request.getQuery();
+            if(query.isBlank()){
+                responseObserver.onError(
+                        Status.INVALID_ARGUMENT
+                                .withDescription("Search query cannot be empty")
+                                .asRuntimeException()
+                );
+                return;
+            }
+            List<BookDto> results=bookService.searchBooks(query);
+            if(results.isEmpty()){
+                responseObserver.onError(
+                        Status.NOT_FOUND
+                                .withDescription("No book matching found" + query)
+                                .asRuntimeException()
+                );
+                return;
+            }
+            for(BookDto dto:results){
+                responseObserver.onNext(GrpcMapper.toBookResponse(dto));
+                log.info("{} fetched successfully",dto);
+            }
+            responseObserver.onCompleted();
+        }
+        catch(Exception e){
+            responseObserver.onError(
+                    Status.INTERNAL
+                            .withDescription("Error searching books" + e.getMessage())
+                            .asRuntimeException()
+            );
+        }
+}
 }
