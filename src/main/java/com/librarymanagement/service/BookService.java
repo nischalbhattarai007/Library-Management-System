@@ -88,13 +88,10 @@ public class BookService {
             throw new RuntimeException("Book is already lent to " + book.getLentTo());
         }
 
-        //  Update lending info only — DO NOT touch author
         book.setLent(true);
         book.setLentTo(borrowerName);
 
-        //  Save updated entity
-        book = bookRepo.update(book); // use update() if available in Micronaut Data
-        // or just bookRepo.save(book) works if entity is managed
+        book = bookRepo.update(book);
 
         return new BookDto(
                 book.getBookId(),
