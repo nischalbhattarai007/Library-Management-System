@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.librarymanagement";
+option java_outer_classname = "LibraryManagementSystem";
+option objc_class_prefix = "HLW";
+
+package com.librarymanagement;
+
+service LibraryService {
+    rpc AddBook(BookRequest) returns (BookResponse);
+    rpc GetBookById(BookIdRequest) returns (BookResponse);
+    rpc ListBooks(Empty) returns (stream BookResponse);
+    rpc LendBook(LendRequest) returns (LendResponse);
+    rpc ReturnBook(ReturnRequest) returns (ReturnResponse);
+    rpc AddAuthor(AuthorRequest) returns (AuthorResponse);
+    rpc ListAuthors(Empty) returns (stream AuthorResponse);
+    rpc DeleteBooks(DeleteBookRequest) returns (DeleteBookResponse);
+}
+message BookRequest{
+    string title = 1;
+    string author_name = 2;
+    string genre = 3;
+}
+message BookResponse{
+    int64 book_id = 1;
+    string title = 2;
+    string author_name = 3;
+    string genre = 4;
+    bool is_lent = 5;
+    string lent_to = 6;
+}
+message BookIdRequest{
+int64 book_id=1;
+}
+message LendRequest{
+    int64 book_id = 1;
+    string borrower_name = 2;
+}
+message LendResponse{
+    int64 book_id = 1;
+    string title = 2;
+    string borrower_name = 3;
+    bool success = 4;
+    string message = 5;
+}
+message ReturnRequest{
+    int64 book_id = 1;
+}
+message ReturnResponse{
+    int64 book_id = 1;
+    string title = 2;
+    bool success = 3;
+    string message = 4;
+}
+message AuthorRequest{
+    string name = 1;
+    string bio = 2;
+}
+message AuthorResponse{
+    string name = 1;
+    string bio = 2;
+    repeated string books = 3;
+}
+message Empty{}
+message DeleteBookRequest{
+    int64 book_id=1;
+}
+message DeleteBookResponse{
+    string message=1;
+}

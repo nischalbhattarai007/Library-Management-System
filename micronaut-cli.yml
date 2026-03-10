@@ -1,0 +1,6 @@
+applicationType: grpc
+defaultPackage: com.librarymanagement
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle
+features: [app-name, discovery-core, gradle, grpc, http-client-test, java, java-application, jdbc-hikari, junit, lombok, micronaut-build, postgres, properties, readme, serialization-jackson, shade, slf4j-simple, test-resources]

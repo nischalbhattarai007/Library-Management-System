@@ -1,0 +1,79 @@
+plugins {
+    id("io.micronaut.application") version "4.6.2"
+    id("com.google.protobuf") version "0.9.2"
+    id("com.gradleup.shadow") version "8.3.9"
+    id("io.micronaut.test-resources") version "4.6.2"
+}
+
+version = "0.1"
+group = "com.librarymanagement"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
+    implementation("io.micronaut:micronaut-discovery-core")
+    implementation("io.micronaut.grpc:micronaut-grpc-runtime")
+    implementation("io.micronaut.serde:micronaut-serde-jackson")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("javax.annotation:javax.annotation-api")
+    compileOnly("org.projectlombok:lombok")
+    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("org.slf4j:slf4j-simple")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("jakarta.persistence:jakarta.persistence-api:3.2.0")
+    implementation("io.micronaut.validation:micronaut-validation")
+    annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
+
+}
+
+
+application {
+    mainClass = "com.librarymanagement.Application"
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("21")
+    targetCompatibility = JavaVersion.toVersion("21")
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs("build/generated/source/proto/main/grpc")
+            srcDirs("build/generated/source/proto/main/java")
+        }
+    }
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:3.25.8" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.75.0" }
+    }
+    generateProtoTasks {
+        all()*.plugins { grpc {} }
+    }
+}
+
+micronaut {
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("com.librarymanagement.*")
+    }
+    testResources {
+        additionalModules.add("jdbc-postgresql")
+    }
+}
+
+
+tasks.named("dockerfileNative") {
+    jdkVersion = "21"
+}
+
+
