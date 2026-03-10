@@ -6,12 +6,12 @@ import com.librarymanagement.dto.AuthorDto;
 import com.librarymanagement.dto.BookDto;
 import com.librarymanagement.entity.AuthorEntity;
 import com.librarymanagement.entity.BookEntity;
+import com.librarymanagement.exception.BookNotFoundException;
+import com.librarymanagement.exception.NameNotFoundException;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Singleton
 public class BookService {
 
@@ -81,8 +81,10 @@ public class BookService {
 
         //  Load the managed book entity
         BookEntity book = bookRepo.findById((int) bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
-
+                .orElseThrow(() -> new BookNotFoundException("Book not found with this id : " + bookId));
+        if(borrowerName.isEmpty()){
+            throw new NameNotFoundException("Borrower Name must be entered");
+        }
         //  Check if already lent
         if (book.isLent()) {
             throw new RuntimeException("Book is already lent to " + book.getLentTo());
@@ -124,7 +126,7 @@ public class BookService {
         return authorRepo.findAll()
                 .stream()
                 .map(author->new AuthorDto(author.getAuthorId(),author.getAuthorName()))
-                .collect(Collectors.toList());
+                .toList();
     }
     public void deleteBooks(int bookId){
        if(!bookRepo.existsById(bookId)){
